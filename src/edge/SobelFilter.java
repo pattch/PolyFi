@@ -3,6 +3,7 @@ package edge;
 import java.awt.image.*;
 import java.io.*;
 import java.lang.Math;
+
 import javax.imageio.*;
 
 public class SobelFilter {
@@ -87,6 +88,12 @@ public class SobelFilter {
 	return retVal;
     }
 
+    public static BufferedImage getEdgesOfImage(BufferedImage sourceImage) {
+	height = sourceImage.getHeight();
+	width = sourceImage.getWidth();
+	return edgeDetection(sourceImage);
+    }
+
     public static void main(String[] args) {
 	fileName = "test.png";
 	outputName = "result.png";
@@ -110,5 +117,4 @@ public class SobelFilter {
 	}
 
     }
-
 }
