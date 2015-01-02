@@ -4,18 +4,19 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
-import edge.SobelFilter;
 import tri.DelaunayTriangulation;
 import tri.Point;
 import tri.Triangle;
+import edge.SobelFilter;
 
 public class TriangleFrame {
     private List<Triangle> triangles;
@@ -24,13 +25,15 @@ public class TriangleFrame {
     private static int numPoints = 100;
     private int width = 750, height = 750;
     private static BufferedImage colors;
+    private HashSet<String> isPressed = new HashSet<String>();
+    private static final String CLICKED = "clicked";
 
     public TriangleFrame() {
 	this(getRandomPoints(numPoints, 750, 750));
     }
 
-    public TriangleFrame(BufferedImage colorImage, BufferedImage noColorImage) {
-	this(getEdgePoints(colorImage, noColorImage));
+    public TriangleFrame(BufferedImage colorImage) {
+	this(getEdgePoints(colorImage));
     }
 
     /**
@@ -71,8 +74,10 @@ public class TriangleFrame {
      *            Similar to minColor.
      * 
      */
-    private static List<Point> getEdgePoints(BufferedImage colorImage,
-	    BufferedImage noColorImage) {
+    private static List<Point> getEdgePoints(BufferedImage colorImage) {
+	BufferedImage noColorImage = new BufferedImage(colorImage.getWidth(),
+		colorImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+	noColorImage.getGraphics().drawImage(colorImage, 0, 0, null);
 	noColorImage = SobelFilter.getEdgesOfImage(noColorImage);
 	int intColor;
 	int qualityOfImage = 2; // Lower = Higher Quality
@@ -120,12 +125,13 @@ public class TriangleFrame {
 
 	    @Override
 	    public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		isPressed.remove(CLICKED);
 	    }
 
 	    @Override
 	    public void mousePressed(MouseEvent e) {
+		isPressed.add(CLICKED);
+
 		if ((e.getX() > 0) && (e.getX() < colors.getWidth())
 			&& (e.getY() > 0) && (e.getY() < colors.getHeight())) {
 		    points.add(new Point(e.getX(), e.getY()));
@@ -153,6 +159,27 @@ public class TriangleFrame {
 
 	    }
 	});
+	tp.addMouseMotionListener(new MouseMotionListener() {
+
+	    @Override
+	    public void mouseMoved(MouseEvent e) {
+	    }
+
+	    @Override
+	    public void mouseDragged(MouseEvent e) {
+		if (isPressed.contains(CLICKED)) {
+		    if ((e.getX() > 0) && (e.getX() < colors.getWidth())
+			    && (e.getY() > 0)
+			    && (e.getY() < colors.getHeight())) {
+			points.add(new Point(e.getX(), e.getY()));
+			makeTriangulation(points);
+			tp.setTriangles(triangles);
+			tp.repaint();
+		    }
+		}
+	    }
+	});
+
     }
 
     public void showFrame() {
