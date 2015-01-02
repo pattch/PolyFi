@@ -14,12 +14,11 @@ public class TestGui {
     }
 
     private static void gregsTestTriangleFrame() {
-	TriangleFrame tf = new TriangleFrame(getImage("Color Image"),
-		getImage("Grayscale Image"));
+	TriangleFrame tf = new TriangleFrame(getImage("Color Image"));
 	tf.showFrame();
     }
 
-    private static BufferedImage getImage(String title) {
+    private static BufferedImage getImage(String title) {  
 	JFileChooser imageSelector = new JFileChooser(
 		System.getProperty("user.dir") + "/images");
 	imageSelector.setDialogTitle(title);
