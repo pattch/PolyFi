@@ -42,7 +42,7 @@ import java.util.Vector;
  *         see: http://www.pi6.fernuni-hagen.de/GeomLab/VoroGlide/ . <br>
  */
 
-public class DelaunayTriangulation {
+public class DelaunayTriangulation implements Triangulation {
 
 	// the first and last points (used only for first step construction)
 	private Point firstP;
@@ -730,7 +730,7 @@ public class DelaunayTriangulation {
 	/**
 	 * returns an iterator object involved in the last update.
 	 * 
-	 * @return iterator to all triangles involved in the last update of the
+	 * @return Iterator to all triangles involved in the last update of the
 	 *         triangulation NOTE: works ONLY if the are triangles (it there is
 	 *         only a half plane - returns an empty iterator
 	 */

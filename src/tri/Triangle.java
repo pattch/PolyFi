@@ -1,5 +1,7 @@
 package tri;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.io.Serializable;
 
 
@@ -12,6 +14,7 @@ public class Triangle implements Serializable {
 	private Point a, b, c;
 	private Triangle abTriangle, bcTriangle, caTriangle;
 	private Circle circum;
+	private Color color;
 
 	private int mc = 0;
 
@@ -448,5 +451,17 @@ public class Triangle implements Serializable {
 
 	public void setC(Point c) {
 		this.c = c;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public void render(Graphics g) {
+		
 	}
 }

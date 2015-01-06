@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -12,11 +13,14 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import process.ImageProcessor;
 
 import tri.DelaunayTriangulation;
 import tri.Point;
 import tri.Triangle;
-import edge.SobelFilter;
+import filter.SobelFilter;
 
 public class TriangleFrame {
     private List<Triangle> triangles;
@@ -78,7 +82,7 @@ public class TriangleFrame {
 	BufferedImage noColorImage = new BufferedImage(colorImage.getWidth(),
 		colorImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 	noColorImage.getGraphics().drawImage(colorImage, 0, 0, null);
-	noColorImage = SobelFilter.getEdgesOfImage(noColorImage);
+	noColorImage = SobelFilter.filter(noColorImage);
 	int intColor;
 	int qualityOfImage = 2; // Lower = Higher Quality
 	Color maxColor = Color.WHITE;
@@ -120,12 +124,12 @@ public class TriangleFrame {
 	addListener(tp);
     }
 
-    private void addListener(TrianglePanel tp) {
+    private void addListener(final TrianglePanel tp) {
 	tp.addMouseListener(new MouseListener() {
 
 	    @Override
 	    public void mouseReleased(MouseEvent e) {
-		isPressed.remove(CLICKED);
+	    	isPressed.remove(CLICKED);
 	    }
 
 	    @Override
@@ -187,21 +191,21 @@ public class TriangleFrame {
     }
 
     public List<Triangle> getTriangles() {
-	return this.triangles;
+    	return this.triangles;
     }
 
     public List<Point> getPoints() {
-	return this.points;
+    	return this.points;
     }
 
     private void makeTriangulation(List<Point> points) {
-	this.points = points;
-	DelaunayTriangulation dt = new DelaunayTriangulation(points);
-	this.triangles = dt.getTriangulation();
+		this.points = points;
+		DelaunayTriangulation dt = new DelaunayTriangulation(points);
+		this.triangles = dt.getTriangulation();
     }
 
     public void randomizePoints(int numPoints) {
-	this.makeTriangulation(getRandomPoints(numPoints, width, height));
+    	this.makeTriangulation(getRandomPoints(numPoints, width, height));
     }
 
     public static List<Point> getRandomPoints(int numPoints, int width,
