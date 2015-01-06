@@ -36,6 +36,10 @@ public class ImageProcessor {
 		return this.processedImage;
 	}
 	
+	public Image getRawImage() {
+		return this.rawImage;
+	}
+	
 	public Image renderTriangles(Image imageToBeRendered) {
 		List<Triangle> triangles = this.triangulation.getTriangulation();
 		BufferedImage copy = new BufferedImage(
@@ -68,18 +72,22 @@ public class ImageProcessor {
 		    centerY = ((yCoord[0] + yCoord[1] + yCoord[2])) / 3;
 		    averageColor = new Color(((BufferedImage) rawImage).getRGB((int) centerX,
 			    (int) centerY));
+		    averageColor = new Color(
+		    		averageColor.getRed(),
+		    		averageColor.getGreen(),
+		    		averageColor.getBlue(),
+		    		200
+		    		);
 		    g.setColor(averageColor);
 		    g.fillPolygon(xCoord, yCoord, 3);
 		}
     }
 
 	public void addPoint(Point point) {
-    	System.out.println("Adding Point - size: " + triangulation.size());
 		triangulation.insertPoint(point);
 	}
 
 	public Image refreshTriangles() {
-		System.out.println("Refreshing Triangles");
 		this.processedImage = renderTriangles(this.rawImage);
 		return this.processedImage;
 	}

@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -25,8 +26,7 @@ public class UIFrame extends ImageFrame /*implements MouseListener*/{
 		super(i);
 		processor = new ImageProcessor(i);
 		setImage(processor.processImage());
-		addListeners(imgPanel);
-		System.out.println("after addListeners");
+		addListeners();
 	}
 
 	/**
@@ -54,28 +54,23 @@ public class UIFrame extends ImageFrame /*implements MouseListener*/{
 	/**
 	 * 				Add Mouse Listeners to the ImagePanel in order to capture mouse events,
 	 * 				and ultimately add points to the triangulation in the ImageProcessor
-	 * 
-	 * @param pane
-	 * 				The pane to which Moust Listeners are to be added.
 	 */
-	private void addListeners(final ImagePanel pane) {
-		System.out.println("adding Listeners");
-		pane.addMouseListener(new MouseListener() {
+	private void addListeners() {
+		imgPanel.addMouseListener(new MouseListener() {
 		    @Override
 		    public void mouseReleased(MouseEvent e) {
-		    	System.out.println("Mouse Released");
 		    	mouseClicked = false;
 		    }
 		    @Override
 		    public void mousePressed(MouseEvent e) {
-		    	System.out.println("Mouse Pressed");
 				mouseClicked = true;
 
-				if ((e.getX() > 0) && (e.getX() < pane.getImageWidth())
-						&& (e.getY() > 0) && (e.getY() < pane.getImageHeight())) {
+				if ((e.getX() > 0) && (e.getX() < ((BufferedImage)processor.getRawImage()).getWidth())
+						&& (e.getY() > 0) && (e.getY() < ((BufferedImage)processor.getRawImage()).getHeight())) {
 					
 				    processor.addPoint(new Point(e.getX(), e.getY()));
-				    pane.setImage(processor.refreshTriangles());
+				    imgPanel.setImage(processor.refreshTriangles());
+				    imgPanel.repaint();
 				}
 		    }
 		    @Override
@@ -86,18 +81,19 @@ public class UIFrame extends ImageFrame /*implements MouseListener*/{
 		    public void mouseClicked(MouseEvent arg0) {}
 		});
 		
-		pane.addMouseMotionListener(new MouseMotionListener() {
+		imgPanel.addMouseMotionListener(new MouseMotionListener() {
 		    @Override
 		    public void mouseMoved(MouseEvent e) {}
 
 		    @Override
 		    public void mouseDragged(MouseEvent e) {
 		    	if (mouseClicked // Redundant?
-						&& ((e.getX() > 0) && (e.getX() < pane.getImageWidth())
+						&& ((e.getX() > 0) && (e.getX() < ((BufferedImage)processor.getRawImage()).getWidth())
 					    && (e.getY() > 0)
-					    && (e.getY() < pane.getImageHeight()))) {
+					    && (e.getY() < ((BufferedImage)processor.getRawImage()).getHeight()))) {
 					processor.addPoint(new Point(e.getX(), e.getY()));
-				    pane.setImage(processor.refreshTriangles());
+				    imgPanel.setImage(processor.refreshTriangles());
+				    imgPanel.repaint();
 			    }
 			}
 		});

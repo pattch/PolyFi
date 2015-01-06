@@ -34,7 +34,6 @@ public class ImagePanel extends JPanel {
 	 * 				The Image this Panel will now contain, draw
 	 */
 	public void setImage(Image img) {
-    	System.out.println("Changing img.");
 		this.img = img;
 	}
 	
