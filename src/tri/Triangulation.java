@@ -76,4 +76,12 @@ public interface Triangulation {
 	 * 				The number of triangles in the Triangulation.
 	 */
 	public int trianglesSize();
+	
+	/**
+	 * Returns the Bounding Box for this Triangulation
+	 * 
+	 * @return
+	 * 				This Triangulation's BoundingBox
+	 */
+	public BoundingBox getBoundingBox();
 }

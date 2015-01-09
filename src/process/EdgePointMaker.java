@@ -1,5 +1,15 @@
 package process;
 
+/*
+ * This Class takes an Image and generates Points using a Sobel Filter. This
+ * implementation simply applies the Edge Detection Operator to the Image and
+ * then populates a set of points directly from the output of the filter. The
+ * amount of points can be tweaked by changing the upper/lower thresholds for
+ * what is considered a relevant point. The image can be further tweaked by
+ * changing a constant named IMAGE_QUALITY that corresponds to how frequently
+ * the image is polled for relevant points.
+ */
+
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -32,8 +42,8 @@ public class EdgePointMaker implements PointMaker {
      */
 	public static final int IMAGE_QUALITY = 2; 
 
-	private Collection<Point> points;
-	private Image rawImage;
+	protected Collection<Point> points;
+	protected Image rawImage;
 	
 	@Override
 	public Collection<Point> makePoints(Image imageToBeProcessed) {
