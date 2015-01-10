@@ -40,8 +40,7 @@ public class EdgePointMaker implements PointMaker {
      *            Instead of passing through the entire image pixel by pixel I
      *            skip pixels, this variable is how many pixels to skip.
      */
-	public static final int IMAGE_QUALITY = 2; 
-
+	protected int imageQuality = 2; 
 	protected Collection<Point> points;
 	protected Image rawImage;
 	
@@ -66,8 +65,8 @@ public class EdgePointMaker implements PointMaker {
 		
 		List<Point> builtPoints = new ArrayList<Point>();
 		
-		for (int yCoord = 0; yCoord < greyImage.getHeight(); yCoord += IMAGE_QUALITY) {
-		    for (int xCoord = 0; xCoord < greyImage.getWidth(); xCoord += IMAGE_QUALITY) {
+		for (int yCoord = 0; yCoord < greyImage.getHeight(); yCoord += imageQuality) {
+		    for (int xCoord = 0; xCoord < greyImage.getWidth(); xCoord += imageQuality) {
 				intColor = greyImage.getRGB(xCoord, yCoord);
 				
 				if (intColor <= MAX_COLOR.getRGB()
@@ -77,7 +76,8 @@ public class EdgePointMaker implements PointMaker {
 		    }
 		}
 		
-		return builtPoints;
+		this.points = builtPoints;
+		return this.points;
     }
 	
 	public EdgePointMaker(Image imageToBeProcessed) {
@@ -97,5 +97,13 @@ public class EdgePointMaker implements PointMaker {
 	
 	public Collection<Point> getPoints() {
 		return this.points;
+	}
+	
+	public void setImageQuality(int imageQuality) {
+		this.imageQuality = imageQuality;
+	}
+	
+	public int getImageQuality() {
+		return this.imageQuality;
 	}
 }
