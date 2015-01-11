@@ -24,7 +24,6 @@ public class ImagePanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		clearScreen(g);
 		g.drawImage(img,0,0,null);
 	}
 
@@ -44,7 +43,7 @@ public class ImagePanel extends JPanel {
 	 * 				The width of the Image this Panel contains, draws
 	 */
 	public int getImageWidth() {
-		return ((BufferedImage)this.img).getWidth();
+		return img.getWidth(null);
 	}
 	
 	/**
@@ -54,7 +53,7 @@ public class ImagePanel extends JPanel {
 	 * 				The height of the Image this Panel contains, draws
 	 */
 	public int getImageHeight() {
-		return ((BufferedImage)this.img).getHeight();
+		return img.getHeight(null);
 	}
 	
 	/**

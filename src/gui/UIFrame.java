@@ -44,7 +44,7 @@ public class UIFrame extends ImageFrame /*implements MouseListener*/{
 		    JOptionPane.showMessageDialog(null, "Please Select an Image");
 	
 		try {
-		    return ImageIO.read(imageSelector.getSelectedFile());
+		    return ImageProcessor.resizeImage(ImageIO.read(imageSelector.getSelectedFile()));
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
@@ -58,19 +58,13 @@ public class UIFrame extends ImageFrame /*implements MouseListener*/{
 	private void addListeners() {
 		imgPanel.addMouseListener(new MouseListener() {
 		    @Override
-		    public void mouseReleased(MouseEvent e) {
-		    	mouseClicked = false;
-		    }
+		    public void mouseReleased(MouseEvent e) {}
 		    @Override
 		    public void mousePressed(MouseEvent e) {
-				mouseClicked = true;
-
-				if ((e.getX() > 0) && (e.getX() < ((BufferedImage)processor.getRawImage()).getWidth())
-						&& (e.getY() > 0) && (e.getY() < ((BufferedImage)processor.getRawImage()).getHeight())) {
-					
-				    processor.addPoint(new Point(e.getX(), e.getY()));
+				if (isPointOnScreen(e.getPoint())) {
+				    processor.addPoint(new Point(e.getPoint()));
 				    imgPanel.setImage(processor.refreshTriangles());
-				    imgPanel.repaint();
+				    repaint();
 				}
 		    }
 		    @Override
@@ -87,15 +81,31 @@ public class UIFrame extends ImageFrame /*implements MouseListener*/{
 
 		    @Override
 		    public void mouseDragged(MouseEvent e) {
-		    	if (mouseClicked // Redundant?
-						&& ((e.getX() > 0) && (e.getX() < ((BufferedImage)processor.getRawImage()).getWidth())
-					    && (e.getY() > 0)
-					    && (e.getY() < ((BufferedImage)processor.getRawImage()).getHeight()))) {
-					processor.addPoint(new Point(e.getX(), e.getY()));
+		    	if (isPointOnScreen(e.getPoint())) {
+					processor.addPoint(new Point(e.getPoint()));
 				    imgPanel.setImage(processor.refreshTriangles());
-				    imgPanel.repaint();
+				    repaint();
 			    }
 			}
 		});
+	}
+	
+	/**
+	 * 
+	 * 		Checks whether or not a point is within the processed image.
+	 * 
+	 * @param point
+	 * 		Point to be checked against image size
+	 * @return
+	 * 		True if the given point is actually in the image, false otherwise.
+	 */
+	private boolean isPointOnScreen(java.awt.Point point)
+	{
+	    if (point.getX() < 0 || point.getY() < 0)
+		return false;
+	    
+	    if (point.getX() > processor.getRawImage().getWidth(null) || point.getY() > processor.getRawImage().getHeight(null))
+		return false;
+	    return true;
 	}
 }

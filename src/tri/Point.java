@@ -38,6 +38,11 @@ public class Point implements Comparable<Point>, Serializable {
 		y = p.y;
 		z = p.z;
 	}
+	
+	public Point(java.awt.Point p){
+	    x = p.x;
+	    y = p.y;
+	}
 
 	/** returns the x-coordinate of this point. */
 	public double getX() {

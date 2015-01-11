@@ -1,14 +1,19 @@
 package process;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-import tri.*;
+import tri.DelaunayTriangulation;
+import tri.Point;
+import tri.Triangle;
+import tri.Triangulation;
 
 public class ImageProcessor {
 	private PointMaker pointMaker;
@@ -20,33 +25,38 @@ public class ImageProcessor {
 	}
 	
 	public ImageProcessor(Image imageToBeProcessed) {
-		double width = ((BufferedImage)imageToBeProcessed).getWidth();
-		double height = ((BufferedImage)imageToBeProcessed).getHeight();
-		if(width > 1600 && height < width) {
-			Image resizedImage = resizeImage(imageToBeProcessed, 1600, (int)((1600 / width) * height));
-			this.pointMaker = new StickyPointMaker(resizedImage);
-			this.rawImage = resizedImage;
-		} else if(height > 900 && width < height) {
-			Image resizedImage = resizeImage(imageToBeProcessed, (int)((900 / height) * width), 900);
-			this.pointMaker = new StickyPointMaker(resizedImage);
-			this.rawImage = resizedImage;
-		} else {
-			this.pointMaker = new StickyPointMaker(imageToBeProcessed);
-			this.rawImage = imageToBeProcessed;
-		}
+		double width = imageToBeProcessed.getWidth(null);
+		double height = imageToBeProcessed.getHeight(null);
+		this.pointMaker = new StickyPointMaker(imageToBeProcessed);
+		this.rawImage = imageToBeProcessed;
 	}
 	
-	public Image resizeImage(Image imageToBeProcessed, int newWidth, int newHeight) {
-		int prevWidth = ((BufferedImage)imageToBeProcessed).getWidth(),
-				prevHeight  = ((BufferedImage)imageToBeProcessed).getHeight();
-		
-		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, ((BufferedImage) imageToBeProcessed).getType());
+	/**
+	 * 				Resizes Image to fit the display.
+	 * 
+	 * @param imageToBeProcessed
+	 * 				The Image that will be resized.
+	 * 
+	 * @return 
+	 * 				Resized image, automatically scaled.
+	 */
+	
+	public static Image resizeImage(Image imageToBeProcessed) {
+		Dimension screenResolution = Toolkit.getDefaultToolkit().getScreenSize();
+		int imgWidth = imageToBeProcessed.getWidth(null), imgHeight  = imageToBeProcessed.getHeight(null);
+		int screenPadding = 35;
+		double screenWidth = screenResolution.getWidth() - screenPadding, screenHeight = screenResolution.getHeight()- screenPadding;
+		if (imgWidth < screenWidth || imgHeight < screenHeight)
+		    return imageToBeProcessed;
+		double scaleRatio = (imgWidth/screenWidth  > imgHeight/screenHeight) ? imgWidth/screenWidth : imgHeight/screenHeight;
+		imgWidth = (int)(imgWidth/scaleRatio);
+		imgHeight = (int)(imgHeight/scaleRatio);
+		BufferedImage resizedImage = new BufferedImage(imgWidth, imgHeight, ((BufferedImage) imageToBeProcessed).getType());
 		Graphics2D g = resizedImage.createGraphics();
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 			    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		g.drawImage(imageToBeProcessed, 0, 0, newWidth, newHeight, 0, 0, prevWidth, prevHeight, null);  
-	    g.dispose(); 
-	    
+		g.drawImage(imageToBeProcessed, 0,0,imgWidth,imgHeight,null);  
+		g.dispose();
 	    return resizedImage;
 	}
 	
@@ -70,8 +80,7 @@ public class ImageProcessor {
 	
 	public Image renderTriangles(Image imageToBeRendered) {
 		List<Triangle> triangles = this.triangulation.getTriangulation();
-		BufferedImage copy = new BufferedImage(
-				((BufferedImage)rawImage).getWidth(), ((BufferedImage)rawImage).getHeight(),
+		BufferedImage copy = new BufferedImage(rawImage.getWidth(null), rawImage.getHeight(null),
 				BufferedImage.TYPE_INT_RGB);
 		
 		Graphics g = copy.getGraphics();

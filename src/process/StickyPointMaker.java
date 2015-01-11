@@ -23,8 +23,7 @@ public class StickyPointMaker extends EdgePointMaker {
 		Random r = new Random();
 		Collection<Point> builtPoints = new ArrayList<Point>();
 		
-		int width = ((BufferedImage)imageToBeProcessed).getWidth(),
-				height = ((BufferedImage)imageToBeProcessed).getHeight();
+		int width = imageToBeProcessed.getWidth(null), height = imageToBeProcessed.getHeight(null);
 		
 		for(int i = 0; i < pointCount; i++) {
 			builtPoints.add(new Point(

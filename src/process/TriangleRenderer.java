@@ -45,7 +45,6 @@ public class TriangleRenderer {
 	 * 				The Triangle to be rendered.
 	 * @param colorImage
 	 * 				The reference image to poll colors from.
-	 * @author Greg
 	 */
     public static void renderTriangle(Graphics g, Image colorImage, Triangle t) {
 		int xCoord[] = new int[3];
@@ -92,8 +91,7 @@ public class TriangleRenderer {
 	 */
 	public static Image render(Image rawImage, Image previousImage, Iterator<Triangle> updatedTriangles, boolean alpha) {
 		// Copy Previously Rendered Image to new Image
-		BufferedImage copy = new BufferedImage(
-				((BufferedImage)rawImage).getWidth(), ((BufferedImage)rawImage).getHeight(),
+		BufferedImage copy = new BufferedImage(rawImage.getWidth(null), rawImage.getHeight(null),
 				BufferedImage.TYPE_INT_RGB);
 		
 		Graphics g = copy.getGraphics();
@@ -101,8 +99,8 @@ public class TriangleRenderer {
 		
 		// Find Bounding Box for Triangles, put Triangles into a List
 		List<Triangle> triangles = new ArrayList<Triangle>();
-		int minX = ((BufferedImage)rawImage).getWidth(), maxX = 0, 
-				minY = ((BufferedImage)rawImage).getHeight(), maxY = 0;
+		int minX = rawImage.getWidth(null), maxX = 0, 
+				minY = rawImage.getHeight(null), maxY = 0;
 		while(updatedTriangles.hasNext()) {
 			Triangle t = updatedTriangles.next();
 			Point[] pts = new Point[] {t.getA(), t.getB(), t.getC()};
