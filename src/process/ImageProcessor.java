@@ -16,17 +16,17 @@ import tri.Triangle;
 import tri.Triangulation;
 
 public class ImageProcessor {
-	private PointMaker pointMaker;
-	private Triangulation triangulation;
-	private Image rawImage, processedImage;
+	protected PointMaker pointMaker;
+	protected Triangulation triangulation;
+	protected Image rawImage, processedImage;
 	
 	public ImageProcessor() {
 		this.triangulation = new DelaunayTriangulation();
 	}
 	
 	public ImageProcessor(Image imageToBeProcessed) {
-		double width = imageToBeProcessed.getWidth(null);
-		double height = imageToBeProcessed.getHeight(null);
+//		double width = imageToBeProcessed.getWidth(null);
+//		double height = imageToBeProcessed.getHeight(null);
 		this.pointMaker = new StickyPointMaker(imageToBeProcessed);
 		this.rawImage = imageToBeProcessed;
 	}
@@ -85,47 +85,45 @@ public class ImageProcessor {
 		
 		Graphics g = copy.getGraphics();
 		g.drawImage(imageToBeRendered,0,0,null);
-		
-		for(Triangle t : triangles) {
-			gregsPaintTriangle(t,g);
-		}
+		TriangleRenderer.render(g, imageToBeRendered, triangles);
 		
 		return copy;
 	}
 	
-    private void gregsPaintTriangle(Triangle t, Graphics g) {
-		int xCoord[] = new int[3];
-		int yCoord[] = new int[3];
-		float centerX, centerY;
-		Color averageColor;
-		if (t.getC() != null) {
-		    xCoord[0] = (int) t.getA().getX();
-		    xCoord[1] = (int) t.getB().getX();
-		    xCoord[2] = (int) t.getC().getX();
-		    yCoord[0] = (int) t.getA().getY();
-		    yCoord[1] = (int) t.getB().getY();
-		    yCoord[2] = (int) t.getC().getY();
-		    centerX = ((xCoord[0] + xCoord[1] + xCoord[2])) / 3;
-		    centerY = ((yCoord[0] + yCoord[1] + yCoord[2])) / 3;
-		    averageColor = new Color(((BufferedImage) rawImage).getRGB((int) centerX,
-			    (int) centerY));
-		    averageColor = new Color(
-		    		averageColor.getRed(),
-		    		averageColor.getGreen(),
-		    		averageColor.getBlue(),
-		    		255
-		    		);
-		    g.setColor(averageColor);
-		    g.fillPolygon(xCoord, yCoord, 3);
-		}
-    }
+//    private void gregsPaintTriangle(Triangle t, Graphics g) {
+//		int xCoord[] = new int[3];
+//		int yCoord[] = new int[3];
+//		float centerX, centerY;
+//		Color averageColor;
+//		if (t.getC() != null) {
+//		    xCoord[0] = (int) t.getA().getX();
+//		    xCoord[1] = (int) t.getB().getX();
+//		    xCoord[2] = (int) t.getC().getX();
+//		    yCoord[0] = (int) t.getA().getY();
+//		    yCoord[1] = (int) t.getB().getY();
+//		    yCoord[2] = (int) t.getC().getY();
+//		    centerX = ((xCoord[0] + xCoord[1] + xCoord[2])) / 3;
+//		    centerY = ((yCoord[0] + yCoord[1] + yCoord[2])) / 3;
+//		    averageColor = new Color(((BufferedImage) rawImage).getRGB((int) centerX,
+//			    (int) centerY));
+//		    averageColor = new Color(
+//		    		averageColor.getRed(),
+//		    		averageColor.getGreen(),
+//		    		averageColor.getBlue(),
+//		    		255
+//		    		);
+//		    g.setColor(averageColor);
+//		    g.fillPolygon(xCoord, yCoord, 3);
+//		}
+//    }
 
 	public void addPoint(Point point) {
 		triangulation.insertPoint(point);
 	}
 
 	public Image refreshTriangles() {
-		this.processedImage = renderTriangles(this.rawImage);
+//		this.processedImage = renderTriangles(this.rawImage);
+		this.processedImage = TriangleRenderer.render(this.rawImage, this.processedImage, this.triangulation.getLastUpdatedTriangles());
 		return this.processedImage;
 	}
 }

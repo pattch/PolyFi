@@ -66,7 +66,7 @@ public class TriangleRenderer {
 		    		averageColor.getRed(),
 		    		averageColor.getGreen(),
 		    		averageColor.getBlue(),
-		    		200
+		    		255
 		    		);
 		    g.setColor(averageColor);
 		    g.fillPolygon(xCoord, yCoord, 3);
@@ -89,8 +89,7 @@ public class TriangleRenderer {
 	 * @return
 	 * 				The final rendered Image.
 	 */
-	public static Image render(Image rawImage, Image previousImage, Iterator<Triangle> updatedTriangles, boolean alpha) {
-		// Copy Previously Rendered Image to new Image
+	public static Image render(Image rawImage, Image previousImage, Iterator<Triangle> updatedTriangles) {// Copy Previously Rendered Image to new Image
 		BufferedImage copy = new BufferedImage(rawImage.getWidth(null), rawImage.getHeight(null),
 				BufferedImage.TYPE_INT_RGB);
 		
@@ -98,28 +97,30 @@ public class TriangleRenderer {
 		g.drawImage(previousImage,0,0,null);
 		
 		// Find Bounding Box for Triangles, put Triangles into a List
+//		Iterator<Triangle> updatedTriangles = triangulation.getLastUpdatedTriangles();
 		List<Triangle> triangles = new ArrayList<Triangle>();
-		int minX = rawImage.getWidth(null), maxX = 0, 
-				minY = rawImage.getHeight(null), maxY = 0;
+//		int minX = rawImage.getWidth(null), maxX = 0, 
+//				minY = rawImage.getHeight(null), maxY = 0;
 		while(updatedTriangles.hasNext()) {
 			Triangle t = updatedTriangles.next();
-			Point[] pts = new Point[] {t.getA(), t.getB(), t.getC()};
-			for(Point p : pts) {
-				// Check Min/Max X
-				if(p.getX() > maxX) maxX = (int)p.getX();
-				if(p.getX() < minX) minX = (int)p.getX();
-				// Check Min/Max Y
-				if(p.getY() > maxY) maxY = (int)p.getY();
-				if(p.getY() < minY) minY = (int)p.getY();
-			}
+//			Point[] pts = new Point[] {t.getA(), t.getB(), t.getC()};
+//			for(Point p : pts) {
+//				// Check Min/Max X
+//				if(p.getX() > maxX) maxX = (int)p.getX();
+//				if(p.getX() < minX) minX = (int)p.getX();
+//				// Check Min/Max Y
+//				if(p.getY() > maxY) maxY = (int)p.getY();
+//				if(p.getY() < minY) minY = (int)p.getY();
+//			}
 			triangles.add(t);
 		}
 		
-		Image rawCopy = ((BufferedImage)rawImage).getSubimage(minX,minY, (maxX - minX), (maxY - minY));
+//		BufferedImage rawCopy = ((BufferedImage)rawImage).getSubimage(minX,minY, (maxX - minX), (maxY - minY));
+//		g.drawImage(rawCopy, minX, minY, null);
 		
+		render(g, rawImage, triangles);
 		
-		
-		return null;
+		return copy;
 	}
 	
 	/**
