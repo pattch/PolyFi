@@ -10,7 +10,7 @@ import java.util.Random;
 import tri.Point;
 
 public class StickyPointMaker extends EdgePointMaker {
-	protected int pointCount = 1000;
+	protected int pointCount = 20000;
 	protected double stickiness = 5;
 
 	public StickyPointMaker(Image imageToBeProcessed) {
@@ -35,7 +35,7 @@ public class StickyPointMaker extends EdgePointMaker {
 		
 		// Make the random points move closer to the  edges of the image.
 		
-		setImageQuality(8);
+		setImageQuality(3);
 		super.makePoints(imageToBeProcessed);
 		
 		for(Point p : builtPoints) {

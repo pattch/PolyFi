@@ -2,9 +2,12 @@ package process;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,8 +17,6 @@ import tri.Triangle;
 import tri.Triangulation;
 
 public class TriangleRenderer {
-	private static final float TRANSLUCENT_ALPHA = 200f;
-	private static final float OPAQUE_ALPHA = 200f;
 	
 	/**
 	 * Render a List of Triangles to a Graphics context.
@@ -26,12 +27,27 @@ public class TriangleRenderer {
 	 * 				The reference Image to poll colors from.
 	 * @param triangles
 	 * 				The Triangles to be rendered.
-	 * @return
-	 * 				The rendered Image of the Triangles.
 	 */
-	public static void render(Graphics g, Image colorImage, List<Triangle> triangles) {
+	public static void render(Graphics g, Image colorImage, Collection<Triangle> triangles) {
+		setAntialias(g,true);
 		for(Triangle t : triangles) 
 			renderTriangle(g,colorImage,t);
+	}
+	
+	/**
+	 * Render an Iterator of Triangles to a Graphics context.
+	 * 
+	 * @param g
+	 * 				The Graphics context to render to.
+	 * @param colorImage
+	 * 				The reference Image to poll colors from.
+	 * @param triangles
+	 * 				The Triangles to be rendered.
+	 */
+	public static void render(Graphics g, Image colorImage, Iterator<Triangle> triangles) {
+		setAntialias(g,true);
+		while(triangles.hasNext())
+			renderTriangle(g,colorImage,triangles.next());
 	}
 	
 	/**
@@ -62,19 +78,13 @@ public class TriangleRenderer {
 		    centerY = ((yCoord[0] + yCoord[1] + yCoord[2])) / 3;
 		    averageColor = new Color(((BufferedImage) colorImage).getRGB((int) centerX,
 			    (int) centerY));
-		    averageColor = new Color(
-		    		averageColor.getRed(),
-		    		averageColor.getGreen(),
-		    		averageColor.getBlue(),
-		    		255
-		    		);
 		    g.setColor(averageColor);
 		    g.fillPolygon(xCoord, yCoord, 3);
 		}
     }
 	
 	/**
-	 * Renders just the effected area regarding the last update of the Triangulation.
+	 * Renders just the effected Triangles regarding the last update of the Triangulation to a new Image Object
 	 * 
 	 * @param rawImage
 	 * 				The rawImage to be rendered on top of.
@@ -95,28 +105,11 @@ public class TriangleRenderer {
 		
 		Graphics g = copy.getGraphics();
 		g.drawImage(previousImage,0,0,null);
-		
-		// Find Bounding Box for Triangles, put Triangles into a List
-//		Iterator<Triangle> updatedTriangles = triangulation.getLastUpdatedTriangles();
 		List<Triangle> triangles = new ArrayList<Triangle>();
-//		int minX = rawImage.getWidth(null), maxX = 0, 
-//				minY = rawImage.getHeight(null), maxY = 0;
 		while(updatedTriangles.hasNext()) {
 			Triangle t = updatedTriangles.next();
-//			Point[] pts = new Point[] {t.getA(), t.getB(), t.getC()};
-//			for(Point p : pts) {
-//				// Check Min/Max X
-//				if(p.getX() > maxX) maxX = (int)p.getX();
-//				if(p.getX() < minX) minX = (int)p.getX();
-//				// Check Min/Max Y
-//				if(p.getY() > maxY) maxY = (int)p.getY();
-//				if(p.getY() < minY) minY = (int)p.getY();
-//			}
 			triangles.add(t);
 		}
-		
-//		BufferedImage rawCopy = ((BufferedImage)rawImage).getSubimage(minX,minY, (maxX - minX), (maxY - minY));
-//		g.drawImage(rawCopy, minX, minY, null);
 		
 		render(g, rawImage, triangles);
 		
@@ -137,7 +130,28 @@ public class TriangleRenderer {
 	 * 				The final rendered Image.
 	 */
 	public static Image renderTriangles(Image rawImage, Triangulation triangulation, boolean alpha) {
-		
 		return null;
+	}
+	
+	/**
+	 * Set whether the Graphics Context renders with Antialiasing
+	 * 
+	 * @param g
+	 * 				The Graphics Context that will be rendered to
+	 * @param AA
+	 * 				Tells whether the Graphics Context will use Antialiasing
+	 */
+	public static void setAntialias(Graphics g, boolean AA) {
+		Graphics2D g2 = (Graphics2D)g;
+		RenderingHints rh =
+				AA ? new RenderingHints(
+						RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON
+				) : new RenderingHints(
+						RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_OFF
+				);
+						
+		g2.setRenderingHints(rh);
 	}
 }
